@@ -9,13 +9,26 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import sqlite3
 from datetime import datetime
 import json
+from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+google_api_key = os.getenv("GOOGLE_API_KEY")
 
 # Initialize LLM
 llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 
+# Get the absolute path to the directory containing this file
+BASE_DIR = Path(__file__).resolve().parent
+
+# Construct the path to memory.db
+DB_PATH = BASE_DIR.parent / 'memory' / 'memory.db'
+
 # Custom Memory Implementation using SQLite
 class SQLiteMemory:
-    def __init__(self, db_path="memory.db"):
+    def __init__(self, db_path=DB_PATH):
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.create_tables()
 
